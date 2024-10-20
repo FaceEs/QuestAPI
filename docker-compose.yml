@@ -1,0 +1,36 @@
+version: '3.4'
+
+services:
+  questapi.web:
+    image: ${DOCKER_REGISTRY-}questapiweb
+    build:
+      context: .
+      dockerfile: QuestAPI.Web/Dockerfile
+  stackupPostgres:
+    image: postgres
+    container_name: questAPIPostgres
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=QuestDb
+    volumes:
+      - stackup_postgres_data:/var/lib/postgresql/data/
+
+  pgadmin:
+    container_name: pgadmin4_container
+    image: dpage/pgadmin4:6.17
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: password
+      PGADMIN_LISTEN_PORT: 80
+    ports:
+      - "8009:80"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+volumes:
+  stackup_postgres_data:
+  pgadmin-data:
